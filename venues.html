@@ -1,0 +1,71 @@
+{%extends "base.html"%}
+{%block content%}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <style>
+        h1{color:white;}
+    </style>
+</head>
+<body>
+{% if submitted %}
+<center><h1>Your Entry is saved</h1><br>
+    <a href="{% url 'venuedit' %}"><button class="btn btn-secondary">Go Back</button></a>
+</center>
+{%else%}
+<form method="POST">
+    <center>
+        {% csrf_token %}
+        <h1>Enter New Activity</h1><br>
+        <h1>{{user}}</h1><br>
+
+        <dev id="dev1">{{forms.as_p}}</dev><br><br>
+        <input type="submit" value="Submit" class="btn btn-secondary">
+    </center>
+</form>
+{%endif%}
+<hr>
+    <h1>Your Activities</h1><br>
+    <a class="btn btn-secondary" href="{% url 'print' %}">Download TodoList</a><br>
+    <br>
+    <table  class="table  table-hover contain container">
+
+         {%for i in todos%}
+        <tr style="display:grid; grid-template-columns:7fr 1fr 1fr 1fr;">
+            <td style="margin-right:28px;"><a style="color:white;" href="{% url 'todo-show' i.id %}">{{i}} <p>{{i.time}}</p></a> </td>
+            <td><a  style="color:white;" href="{% url 'update' i.id %}" class="btn btn-outline-secondary btn-sm"> Update</a></td>
+            <td><a  style="color:white;" href="{% url 'delete' i.id %}" class="btn btn-outline-secondary btn-sm"> Delete</a></td>
+            <td><a  style="color:white;" href="{% url 'print_id' i.id %}" class="btn btn-outline-secondary btn-sm "> Download</a></td>
+    </tr>
+        {%endfor%}
+    </table>
+   <h6 style="color:white">
+
+       <nav  aria-label="Page navigation example">
+           <ul  class="pagination justify-content-center">
+                {% if todos.has_previous %}
+               <li class="page-item"> <a class="page-link" href="?page=1">&laquo first</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ todos.previous_page_number }}"> previous</a></li>
+                {% endif %}
+               {% for i in nums %}
+               <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+               {% endfor %}
+
+<!--               <li class="page-item disabled"><a class="page-link ">Page {{todos.number}} of {{todos.paginator.num_pages}}</a></li>-->
+                {% if todos.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{todos.next_page_number}}"> Next </a></li>
+               <li class="page-item"> <a class="page-link" href="?page={{todos.paginator.num_pages}}">  last &raquo </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+   </h6>
+
+        <br><br><hr/>
+
+</body>
+</html>
+{%endblock%}
